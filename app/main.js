@@ -11,6 +11,7 @@ async function buscarLivros(){
 }
 
 function exibirLivros(e){
+    sectionLivros.innerHTML = "";
     e.forEach(elemento => {
         sectionLivros.innerHTML += `
         <div class="livro">
@@ -34,4 +35,14 @@ function descontar(e) {
         return {...elemento, preco: elemento.preco - (elemento.preco * desconto)}
     })
     return livrosDesc;
+}
+
+const btns = document.querySelectorAll('.btn');
+btns.forEach(e => e.addEventListener('click', filtrar));
+
+function filtrar(){
+    const btnClicado = document.getElementById(this.id);
+    const valorDoBotao =  btnClicado.value;
+    let arrayFiltro = livros.filter(e => e.categoria == valorDoBotao);
+    exibirLivros(arrayFiltro);
 }
