@@ -13,9 +13,10 @@ async function buscarLivros(){
 function exibirLivros(e){
     sectionLivros.innerHTML = "";
     e.forEach(elemento => {
+        let disponivel = elemento.quantidade > 0 ? 'livro_imagens' : 'livro__imagens indisponivel';
         sectionLivros.innerHTML += `
         <div class="livro">
-      <img class="livro__imagens" src=${elemento.imagem} alt=${elemento.alt} />
+      <img class="${disponivel}" src=${elemento.imagem} alt=${elemento.alt} />
       <h2 class="livro__titulo">
         ${elemento.titulo}
       </h2>
@@ -46,3 +47,20 @@ function filtrar(){
     let arrayFiltro = livros.filter(e => e.categoria == valorDoBotao);
     exibirLivros(arrayFiltro);
 }
+
+let btnLivrosOrdenados = document.getElementById('btnOrdenarPorPreco');
+btnLivrosOrdenados.addEventListener('click', ordenarPreco);
+
+function ordenarPreco(){
+    let livrosOrdenados = livros.sort((a,b) => a.preco - b.preco);
+    exibirLivros(livrosOrdenados);
+}
+
+/* function disponibilidade(e){
+    if (e.quantidade > 0) {
+        return 'livro__imagens';
+    }
+    else {
+        return 'livro__imagens indisponivel'
+    }
+} */
