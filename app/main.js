@@ -2,6 +2,7 @@ let livros = [];
 const APILivros = 'http://guilhermeonrails.github.io/casadocodigo/livros.json';
 const sectionLivros = document.getElementById('livros'); 
 buscarLivros()
+const valorDosDisponieis = document.getElementById('valor_total_livros_disponiveis');
 
 async function buscarLivros(){
     const res = await fetch(APILivros);
@@ -11,6 +12,7 @@ async function buscarLivros(){
 }
 
 function exibirLivros(e){
+    valorDosDisponieis.innerHTML = '';
     sectionLivros.innerHTML = "";
     e.forEach(elemento => {
         let disponivel = elemento.quantidade > 0 ? 'livro_imagens' : 'livro__imagens indisponivel';
@@ -44,16 +46,39 @@ btns.forEach(e => e.addEventListener('click', filtrar));
 function filtrar(){
     const btnClicado = document.getElementById(this.id);
     const valorDoBotao =  btnClicado.value;
-    let arrayFiltro = livros.filter(e => e.categoria == valorDoBotao);
+    let arrayFiltro = valorDoBotao == 'disponivel' ? filtraPorDisponibilidade() : filtrarPorCategoria(valorDoBotao);
     exibirLivros(arrayFiltro);
+    if (valorDoBotao == 'disponivel'){
+        const valorTotal = calcularValorTotal(arrayFiltro);
+        ordenarDisponiveis(valorTotal);
+    }
 }
 
 let btnLivrosOrdenados = document.getElementById('btnOrdenarPorPreco');
 btnLivrosOrdenados.addEventListener('click', ordenarPreco);
 
+function calcularValorTotal(e) {
+    return e.reduce((acc, atual) => acc + atual.preco, 0).toFixed(2);
+}
+
+function filtrarPorCategoria(valorDoBotao) {
+    return livros.filter(e => e.categoria == valorDoBotao);
+}
+
+function filtraPorDisponibilidade() {
+    return livros.filter(e => e.quantidade > 0);
+}
+
 function ordenarPreco(){
     let livrosOrdenados = livros.sort((a,b) => a.preco - b.preco);
     exibirLivros(livrosOrdenados);
+}
+
+function ordenarDisponiveis(e){
+    valorDosDisponieis.innerHTML = `
+    <div class="livros__disponiveis">
+      <p>Todos os livros disponíveis por R$ <span id="valor">${e}</span></p>
+    `
 }
 
 /* function disponibilidade(e){
